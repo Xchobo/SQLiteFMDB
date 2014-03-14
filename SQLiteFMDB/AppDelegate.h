@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FMDB/FMDatabase.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+
+@property (strong, nonatomic) FMDatabase *db;
+
+- (BOOL) createTable;
 
 @end

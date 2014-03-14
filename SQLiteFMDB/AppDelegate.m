@@ -10,9 +10,52 @@
 
 @implementation AppDelegate
 
+//如果有資料庫就開啓，否則建立後開啓
+- (BOOL) openDB{
+    // 取得文件資料夾
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = [paths objectAtIndex:0];
+    NSString *path = [docsPath stringByAppendingPathComponent:@"database.db"];
+    
+    _db = [FMDatabase databaseWithPath:path];
+    
+    NSLog(@"DB=%@", _db);
+    if (_db) {
+        NSLog(@"DB Open");
+        return 1;
+    }else{
+        NSLog(@"DB Fail");
+    }
+    return 0;
+}
+
+- (BOOL) createTable{
+    [_db open];  //開啓資料庫連線
+    
+    NSString *sql =[NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS User(%@ text primary key, %@ text)",
+                    @"name", @"age"];
+    BOOL check = [_db executeUpdate:sql];
+    if (check) {
+        NSLog(@"create OK");
+    }else{
+        NSLog(@"create Fail");
+    }
+    [_db close];   //關閉資料庫連線
+    return check;
+}
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    // -application:didFinishLaunchingWithOptions
+    //開啓資料庫
+    [self openDB];
+    
+    // 建立資料表
+    [self createTable];
+    
     return YES;
 }
 							
